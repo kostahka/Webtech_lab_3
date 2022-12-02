@@ -13,4 +13,7 @@ public class ServiceFactory {
     public AuthService getAuthService() {
         return AuthService.getInstance();
     }
+    public RecordService getRecordService() {
+        return RecordService.getInstance();
+    }
 }

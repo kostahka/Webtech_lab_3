@@ -1,7 +1,15 @@
 package by.bsuir.lab3.server.controller;
 
+import by.bsuir.lab3.server.commands.CommandProvider;
+import by.bsuir.lab3.server.commands.ICommand;
+import by.bsuir.lab3.server.commands.exceptions.CommandException;
+import by.bsuir.lab3.server.commands.impl.DisconnectCommand;
+import by.bsuir.lab3.server.model.AuthType;
+import by.bsuir.lab3.server.service.ServiceFactory;
+
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketAddress;
 
 public class ServerClientController extends Thread{
     private final Socket socket;
@@ -35,6 +43,8 @@ public class ServerClientController extends Thread{
 
         running = true;
 
+        SocketAddress user = socket.getRemoteSocketAddress();
+
         do{
             try {
                 String request = readMessage();
@@ -42,16 +52,21 @@ public class ServerClientController extends Thread{
                     break;
 
                 // Do command
+                ICommand command = CommandProvider.getInstance().getCommand(request);
+                String response = command.execute(user, request);
+                sendMessage(response);
 
-                if(request.equals("DISCONNECT"))
+                if(command instanceof DisconnectCommand)
                     running = false;
-
-                sendMessage("OK");
             }
-            catch (Exception e){
+            catch (CommandException e){
                 e.printStackTrace();
+                sendMessage(e.getMessage());
             }
         }while (running);
+
+        ServiceFactory.getInstance().getAuthService()
+                .setAuthType(user, AuthType.UnAUTH);
 
         try {
             socket.close();

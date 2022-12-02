@@ -24,6 +24,8 @@ public class ServerController extends Thread{
             try {
                 clientSocket = socket.accept();
                 System.out.println("Client has connected");
+                ServerClientController client = new ServerClientController(clientSocket, this);
+                client.start();
             }
             catch (IOException e){
                 e.printStackTrace();

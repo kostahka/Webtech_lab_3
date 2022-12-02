@@ -27,7 +27,7 @@ public class CommandProvider {
                 break;
             case "VIEW": command = new ViewCommand();
                 break;
-            case "Create": command = new CreateCommand();
+            case "CREATE": command = new CreateCommand();
                 break;
             default: throw new CommandException("No such command");
         }

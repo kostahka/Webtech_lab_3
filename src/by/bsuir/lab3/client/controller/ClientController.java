@@ -1,5 +1,7 @@
 package by.bsuir.lab3.client.controller;
 
+import by.bsuir.lab3.server.controller.ServerController;
+
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -12,7 +14,7 @@ public class ClientController extends Thread {
     @Override
     public void run(){
         try{
-            Socket socket = new Socket(InetAddress.getLocalHost(), 5555);
+            Socket socket = new Socket(InetAddress.getLocalHost(), ServerController.PORT);
 
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
